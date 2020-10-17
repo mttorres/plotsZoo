@@ -1,5 +1,6 @@
 import { Dados } from './data/dados.js'
 import { Bar   } from './graphs/barGraph.js'
+import { LineGraph } from './graphs/lineGraph.js';
 import {ScatterGraph} from './graphs/ScatterGraph.js'
 
 /*
@@ -20,35 +21,52 @@ import {ScatterGraph} from './graphs/ScatterGraph.js'
 
 */
 
+function dataLinear2xProGeneretor()
+{
+    let data = [];
+    for(let i = 1; i < 100; i++)
+    {
+      //data[i] = {x: i , y: 2*i };
+      data.push({x: i , y: 2*i });
+    }
+    return data;
+}
+
 
 async function main() {
   
   // sempre será essa classe para carregar nossos dados
   let dados = new Dados();
 
-  // path (tipo de dado pode mudar ou será input)
+  // path (tipo de dado pode mudar ou será input, ou será alguma relação de função ex 2x)
   await dados.loadCSV('../../../datasets/superstore.csv');
+  // vai receber os campos para serem passados:
+  let fx = 'Sales';
+  let fy = 'Profit';
 
   // vai ser um input
   let c = {div: "#main", width: 800, height: 600, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
-            fx: 'Sales', fy: 'Profit', col: "Category" , colScheme: 'CAT', r: 'r'};
+            fx: 'x', fy: 'y', col: "Category" , colScheme: 'CAT', r: 'r'};
 
-  // vai ter um input para escolher o graficod a vez
+  // vai ter um input para escolher o grafico da vez
   
   //let bar = new Bar(c);
 
-  let sp = new ScatterGraph(c); 
+  //let sp = new ScatterGraph(c); 
 
-  
+  let lp = new LineGraph(c); 
+
+
+
   // sempre teremos isso
   //bar.setData(dados.getData());
-  sp.assignData(dados.getData());
-
+  //sp.assignData(dados.getData());
+  lp.assignData(dataLinear2xProGeneretor());
 
   // e isso
   //bar.render();
-
-  sp.render();
+  //sp.render();
+  lp.render();
 }
 
 main();

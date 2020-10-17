@@ -8,6 +8,10 @@ export class LineGraph extends BasicGraph
         this.lineSeg = [];
         this.lineParams = this.chooseLine(config.fx, config.fy);
         this.ticks = 15;
+        this.lineDefinitions = d3.line()
+                                .x(d => this.xScale(d.x))
+                                .y(d => this.yScale(d.y))
+
         // parâmetros:  cx, cy, se deve ter cores mapeando algum atributo, como esse atributo de cor deve-ser feito (via gradiente de cores ou por cada cor um valor), raio
     }
 
@@ -61,20 +65,16 @@ export class LineGraph extends BasicGraph
         this.createAxis();
     }
 
-    /*
-        Render original usado na aula...
-    */
-
     render()
     {
 
-        const lineScale = this.lineSeg.map((d) => { return { x: this.xScale(d.x), y: this.yScale(d.y) } });
-
-        const t = this.margins.transition().duration(1500);
+        //const lineScale = this.lineSeg.map((d) => { return { x: this.xScale(d.x), y: this.yScale(d.y) } });
+        let t = this.margins.transition().duration(1500);
 
         // select inicial
-        let line = this.margins.selectAll('path').data(lineScale);
+        let line = this.margins.selectAll('path').data(this.lineSeg);
 
+/*
         // enter
         line.enter()
               .append('path')
@@ -83,7 +83,7 @@ export class LineGraph extends BasicGraph
               .attr("stroke-width", 1.5)
               .attr("stroke-linejoin", "round")
               .attr("stroke-linecap", "round")
-              .attr("d", lineScale)
+              .attr("d", lineDefinitions)
               .call(en => en.transition(t));
 
         //exit
@@ -101,8 +101,19 @@ export class LineGraph extends BasicGraph
               .attr("stroke-width", 1.5)
               .attr("stroke-linejoin", "round")
               .attr("stroke-linecap", "round")
-              .attr("d", lineScale)
+              .attr("d", lineDefinitions)
               .call(up => up.transition(t));
+ 
+ */
+        this.margins.append("path")
+            .datum(this.lineSeg)
+            .attr("fill", "none")
+            .attr("stroke", "blue")
+            .attr("stroke-width", 1.5)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", this.lineDefinitions);
+
     }
 
 }
