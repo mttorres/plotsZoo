@@ -33,6 +33,7 @@ export class BasicGraph
         this.margins = this.svg
             .append('g')
             .attr("transform",`translate(${this.config.left},${this.config.top})`); // criamos o "grupo", local que iremos por nossos objetos svg e ele vai ser transladado pelas margens
+            // pelo oque parece todo mundo desse grupo já vai estar naturalmente transladado
     }
 
     // vamos criar os eixos agora!
