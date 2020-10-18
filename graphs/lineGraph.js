@@ -6,20 +6,22 @@ export class LineGraph extends BasicGraph
     {
         super(config);
         this.lineSeg = [];
-        this.lineParams = this.chooseLine(config.fx, config.fy);
+        this.chooseLine(config.fx, config.fy);
         this.ticks = 15;
         this.lineDefinitions = d3.line()
                                 .x(d => this.xScale(d.x))
-                                .y(d => this.yScale(d.y))
-
-        // parâmetros:  cx, cy, se deve ter cores mapeando algum atributo, como esse atributo de cor deve-ser feito (via gradiente de cores ou por cada cor um valor), raio
+                                .y(d => this.yScale(d.y));
+        
+        // select inicial
+        this.lineCanvas = this.margins.append("path").attr('class','lineCanv');
     }
 
     /* passa os nomes dos campos que devem ser extraídos de cada row
     */
     chooseLine(x,y)
     {
-        return {x: x, y: y};
+        debugger;
+        this.lineParams = {x: x, y: y};
     }
 
     /* 
@@ -52,42 +54,60 @@ export class LineGraph extends BasicGraph
 
     }
 
-
-    assignData(data) 
-    {
-        console.log(`[assignData - debug] data: ${data}`);
-        this.transformData(data);
-        console.log(`[assignData - debug] transform: ${this.circles}`);
-        
-        // cria as escalas
-        this.createScales();
-        // cria os eixos novos (toda vez que um dado novo é jogado no sistema)
-        this.createAxis();
-    }
-
     render()
     {
 
         //const lineScale = this.lineSeg.map((d) => { return { x: this.xScale(d.x), y: this.yScale(d.y) } });
         let t = this.margins.transition().duration(1500);
 
-        // select inicial
-        let line = this.margins.selectAll('path').data(this.lineSeg);
+        // select inicial 
+        //let line = this.margins.selectAll('path').datum(this.lineSeg);
+        //let line = this.margins.selectAll('.lineCanv').datum(this.lineSeg);
 
+        let line = this.margins.selectAll('path.lineCanv').datum(this.lineSeg);
+
+ /*       
+
+        line.join(
+            en => en.append("path")
+            .attr("class","line")
+            .attr("fill", "none")
+            .attr("stroke", "blue")
+            .attr("stroke-width", 1.5)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", (d) => { return this.lineDefinitions(d); } ),
+        
+            up => up.style('stroke', 'SeaGreen')
+                    .attr("d", (d) => { return this.lineDefinitions(d); } ),
+        
+            ex => ex.style("stroke", "IndianRed")
+            .call(ex => ex.transition(t).remove())
+        );
+
+*/
+
+        line.join('path')
+        .attr('class','lineCanv')
+        .attr("fill", "none")
+        .attr("stroke", "blue")
+        .attr("stroke-width", 1.5)
+        .attr("d", this.lineDefinitions)
+        .call(up => up.style('stroke','SeaGreen').attr("opacity", 0).transition(t).ease(d3.easeLinear).attr("opacity", 1));
+        
 /*
         // enter
-        line.enter()
-              .append('path')
-              .attr("fill", "none")
-              .attr("stroke", "RoyalBlue")
-              .attr("stroke-width", 1.5)
-              .attr("stroke-linejoin", "round")
-              .attr("stroke-linecap", "round")
-              .attr("d", lineDefinitions)
-              .call(en => en.transition(t));
+        this.lineCanv.datum(this.lineSeg).enter()
+            .append('path')
+            .attr("fill", "none")
+            .attr("stroke", "RoyalBlue")
+            .attr("stroke-width", 1.5)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("d", this.lineDefinitions);
 
         //exit
-        line.exit()
+        this.lineCanv.datum(this.lineSeg).exit()
               .attr("fill", "none")
               .attr("stroke", "IndianRed")
               .attr("stroke-width", 1.5)
@@ -96,15 +116,17 @@ export class LineGraph extends BasicGraph
               .call(ex => ex.transition(t).remove());
 
         // update
-        line.attr("fill", "none")
+        this.lineCanv.datum(this.lineSeg)
+              .attr("fill", "none")
               .attr("stroke", "purple")
               .attr("stroke-width", 1.5)
               .attr("stroke-linejoin", "round")
               .attr("stroke-linecap", "round")
-              .attr("d", lineDefinitions)
               .call(up => up.transition(t));
  
- */
+*/
+ 
+  /*  
         this.margins.append("path")
             .datum(this.lineSeg)
             .attr("fill", "none")
@@ -114,6 +136,8 @@ export class LineGraph extends BasicGraph
             .attr("stroke-linecap", "round")
             .attr("d", this.lineDefinitions);
 
+*/            
+    
     }
 
 }
