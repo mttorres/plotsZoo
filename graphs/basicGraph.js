@@ -76,7 +76,7 @@ export class BasicGraph
 
     updateAxis()
     {
-        let t = this.margins.transition().duration(1500);
+        let t = this.margins.transition().duration(600);
 
         let xAxis = d3.axisBottom(this.xScale).ticks(this.ticks);
 
@@ -87,13 +87,15 @@ export class BasicGraph
           .attr('transform', `translate(0,${this.config.height})`)
           .call(c => 
             {
-                c.transition(t);
+                c.attr("opacity", 0).transition(t).ease(d3.easeLinear)
+                .attr("opacity", 1);
                 xAxis(c);
             });
     
         this.margins.selectAll('.ei-y').call(c => 
             {
-                c.transition(t);
+                c.attr("opacity", 0).transition(t).ease(d3.easeLinear)
+                .attr("opacity", 1);
                 yAxis(c);
             });
     

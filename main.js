@@ -45,7 +45,7 @@ async function main() {
   let fy = 'Profit';
 
   // vai ser um input
-  let c = {div: "#main", width: 800, height: 600, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+  let c = {div: "#main", width: 500, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
             fx: 'x', fy: 'y', col: "Category" , colScheme: 'CAT', r: 'r'};
 
   // vai ter um input para escolher o grafico da vez

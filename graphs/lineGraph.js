@@ -57,44 +57,29 @@ export class LineGraph extends BasicGraph
     render()
     {
 
-        //const lineScale = this.lineSeg.map((d) => { return { x: this.xScale(d.x), y: this.yScale(d.y) } });
-        let t = this.margins.transition().duration(1500);
+        const t = this.lineCanvas.transition().duration(1000);
+        const line = this.margins.selectAll('.lineCanv').datum(this.lineSeg);
 
-        // select inicial 
-        //let line = this.margins.selectAll('path').datum(this.lineSeg);
-        //let line = this.margins.selectAll('.lineCanv').datum(this.lineSeg);
-
-        let line = this.margins.selectAll('path.lineCanv').datum(this.lineSeg);
-
- /*       
-
+///*
         line.join(
-            en => en.append("path")
-            .attr("class","line")
-            .attr("fill", "none")
-            .attr("stroke", "blue")
-            .attr("stroke-width", 1.5)
-            .attr("stroke-linejoin", "round")
-            .attr("stroke-linecap", "round")
-            .attr("d", (d) => { return this.lineDefinitions(d); } ),
+            en => en.call(en => en.attr("opacity", 0).transition(t).ease(d3.easeLinear).attr("opacity", 1))
+                    .attr("d", this.lineDefinitions)
+                    .style('stroke','RoyalBlue'),
         
-            up => up.style('stroke', 'SeaGreen')
-                    .attr("d", (d) => { return this.lineDefinitions(d); } ),
-        
+            up => up.call(up => up.attr("opacity", 0).transition(t).ease(d3.easeLinear).attr("opacity", 1))
+                    .attr("d", this.lineDefinitions)
+                    .style('stroke', 'RoyalBlue'),
+                    
             ex => ex.style("stroke", "IndianRed")
-            .call(ex => ex.transition(t).remove())
-        );
-
-*/
-
-        line.join('path')
-        .attr('class','lineCanv')
+            .call(ex => ex.attr("opacity", 0).transition(t).remove())
+        )
         .attr("fill", "none")
-        .attr("stroke", "blue")
         .attr("stroke-width", 1.5)
-        .attr("d", this.lineDefinitions)
-        .call(up => up.style('stroke','SeaGreen').attr("opacity", 0).transition(t).ease(d3.easeLinear).attr("opacity", 1));
-        
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round");
+
+//*/
+
 /*
         // enter
         this.lineCanv.datum(this.lineSeg).enter()
