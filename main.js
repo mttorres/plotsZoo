@@ -67,6 +67,18 @@ async function main() {
   //bar.render();
   //sp.render();
   lp.render();
+
+  console.log("esperando...");
+  setTimeout(() => {
+    {
+      c['fx'] = fx;
+      c['fy'] = fy;
+      lp.config = c;
+      lp.chooseLine(c.fx,c.fy);
+      lp.assignData(dados.getData());
+      lp.render();
+    }
+  }, 10000);
 }
 
 main();

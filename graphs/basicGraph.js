@@ -12,7 +12,6 @@ export class BasicGraph
 
         this.createSvg();
         this.createMargins();
-        //this.createAxis();
     }
 
     // criação básica de svg comas definições de margem
@@ -63,14 +62,68 @@ export class BasicGraph
 
         this.margins
             .append("g") 
+            .attr('class','ei-x')
             .attr("transform",`translate(0,${this.config.height})`)
             .call(xAxis);  
             
         this.margins
             .append("g")
+            .attr('class','ei-y')
             .call(yAxis);  
              
 
+    }
+
+    updateAxis()
+    {
+        let t = this.margins.transition().duration(1500);
+
+        let xAxis = d3.axisBottom(this.xScale).ticks(this.ticks);
+
+        let yAxis = d3.axisLeft(this.yScale).ticks(this.ticks);
+    
+        this.margins
+          .selectAll('.ei-x')
+          .attr('transform', `translate(0,${this.config.height})`)
+          .call(c => 
+            {
+                c.transition(t);
+                xAxis(c);
+            });
+    
+        this.margins.selectAll('.ei-y').call(c => 
+            {
+                c.transition(t);
+                yAxis(c);
+            });
+    
+    
+        // curiosamente as transições não funcionam... ?
+    }
+
+    assignData(data) 
+    {
+        let updateFlag = false;
+        if(this.xScale && this.yScale){
+            updateFlag = true;
+        }
+        
+        this.transformData(data);
+        
+        // cria as escalas
+        this.createScales();
+
+        // cria os eixos novos (toda vez que um dado novo é jogado no sistema)
+        
+        if(updateFlag)
+        {
+            this.updateAxis();
+        }
+        else
+        {
+            this.createAxis();
+        }
+        
     }
     
 }
