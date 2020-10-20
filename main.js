@@ -133,20 +133,11 @@ async function main() {
 
 //main();
 
-async function initScatter()
+async function initScatter(c)
 {
   // default (primeira vez)
   let dados = new Dados();
-  await dados.loadCSV('../../../datasets/superstore.csv');
-  // vai receber os campos para serem passados:
-  let fx = 'Sales';
-  let fy = 'Profit';
-
-  // vai ser um input na proxima vez
-  let c = {div: "#main", width: 750, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
-    fx: fx, fy: fy, col: "Category" , colScheme: 'CAT', r: 'r', ticks: 15};
-
-    
+  await dados.loadCSV(c.path);
 
   let sp = new ScatterGraph(c); 
 
@@ -157,10 +148,11 @@ async function initScatter()
   setTimeout(() => {
     {
 
-
-      c.colScheme = "INTER";      
+      c.fx = "Shipping Cost";
+      c.fy = "Sales";     
       c.col = "Discount"
-      sp.chooseCircle(c.fx, c.fy, c.col, c.c, c.r);
+      c.colScheme = "INTER"; 
+      sp.chooseCircle(c.fx, c.fy, c.col, c.colScheme, c.r);
       sp.assignData(dados.getData());
       sp.render();
     }
@@ -170,18 +162,8 @@ async function initScatter()
 }
 
 
-async function initLine()
+async function initLine(c)
 {
-
-  let dados = new Dados();
-  //await dados.loadCSV('../../../datasets/superstore.csv');
-
-  let fx = 'x';
-  let fy = 'y';
-
-  // vai ser um input na proxima vez
-  let c = {div: "#main", width: 750, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
-    fx: fx, fy: fy, ticks: 15 };
 
   let lp = new LineGraph(c); 
 
@@ -205,16 +187,10 @@ async function initLine()
 
 }
 
-async function initBar()
+async function initBar(c)
 {
   let dados = new Dados();
-  await dados.loadCSV('../../../datasets/superstore.csv');
-
-  let fx = 'Profit';
-
-  // vai ser um input na proxima vez
-  let c = {div: "#main", width: 800, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
-  fx: fx, catScheme: 'NUM', numCat: 15};
+  await dados.loadCSV(c.path);
 
   let bp = new Bar(c); 
 
@@ -243,15 +219,46 @@ async function testMainNew()
   console.log(plot_type);
 
   if(plot_type === "scatter"){
-    initScatter();
+    // vai ser um input na proxima vez
+    
+    document.getElementById("catScheme").style.display  = "None"; 
+    
+    var c = {path: '../../../datasets/superstore.csv', div: "#main", width: 750, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+    fx: 'Sales', fy: 'Profit', col: "Category" , colScheme: 'CAT', r: 'r', ticks: 15};
+    initScatter(c);
   }
   if(plot_type === "bar"){
-    initBar();
+    
+    document.getElementById("col").style.display  = "None"; 
+    document.getElementById("colScheme").style.display  = "None"; 
+
+    var c = {path: '../../../datasets/superstore.csv', div: "#main", width: 800, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+    fx: "Profit", catScheme: 'NUM', numCat: 15};
+    initBar(c);
   }
   if(plot_type === "line"){
-    initLine();
+
+    document.getElementById("catScheme").style.display  = "None";
+
+    document.getElementById("col").style.display  = "None"; 
+    document.getElementById("colScheme").style.display  = "None"; 
+
+    var c = {div: "#main", width: 750, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+    fx: 'x', fy: 'y', ticks: 15 };
+    initLine(c);
   }
 
+  
+
+}
+
+
+function validateForm() {
+  var x = document.forms["myForm"]["fname"].value;
+  if (x == "") {
+    alert("Name must be filled out");
+    return false;
+  }
 }
 
 testMainNew();

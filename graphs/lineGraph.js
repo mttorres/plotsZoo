@@ -20,6 +20,8 @@ export class LineGraph extends BasicGraph
     */
     chooseLine(x,y)
     {
+        this.labelX = x;
+        this.labelY = y;
         this.lineParams = {x: x, y: y};
     }
 

@@ -21,8 +21,8 @@ export class BasicGraph
         .append("svg")
         .attr('x',this.config.posX)
         .attr('y',this.config.posY)
-        .attr('width', this.config.width + this.config.left + this.config.right)  
-        .attr('height', this.config.height + this.config.top + this.config.bottom ); 
+        .attr('width', this.config.width + this.config.left*2 + this.config.right+100)  
+        .attr('height', this.config.height + this.config.top + this.config.bottom * 2 ); 
     }
 
     // criação do grupo(novo mini svg) que vai ser transaladado para respeitar a margen
@@ -74,6 +74,33 @@ export class BasicGraph
 
     }
 
+
+    nameAxis()
+    {
+
+        const labelX = this.labelX ? this.labelX : '';
+        const labelY = this.labelY ? this.labelY : '';
+
+        this.svg.append('text')
+                .attr('class', 'name-x')
+                .style('font-size', '25px')
+                .attr('transform',`translate(${(this.config.width + this.config.left * 2 + this.config.right + 30) / 2},${
+              this.config.height + this.config.top + this.config.bottom})`,)
+                .attr('dy', '0.5em')
+                .style('text-anchor', 'middle')
+                .text(labelX);
+    
+                this.svg.append('text')
+                .attr('class', 'name-y')
+                .style('font-size', '25px')
+                .attr('transform',`translate(${(this.config.left + 15) },${
+               this.config.top-30})`,)
+                .attr('dy', '0.5em')
+                .style('text-anchor', 'middle')
+                .text(labelY);
+    }
+
+
     updateAxis()
     {
         let t = this.margins.transition().duration(600);
@@ -98,9 +125,25 @@ export class BasicGraph
                 .attr("opacity", 1);
                 yAxis(c);
             });
-    
-    
-        // curiosamente as transições não funcionam... ?
+
+        const labelX = this.labelX ? this.labelX : '';
+        const labelY = this.labelY ? this.labelY : '';
+        
+        let tsvg = this.svg.transition().duration(600);
+
+        this.svg.selectAll('.name-x').call( c => {
+                c.attr("opacity", 0).transition(tsvg).ease(d3.easeLinear)
+                .text(labelX)
+                .attr("opacity", 1);
+                
+            });
+
+        this.svg.selectAll('.name-y').call( c => {
+                c.attr("opacity", 0).transition(tsvg).ease(d3.easeLinear)
+                .text(labelY)
+                .attr("opacity", 1);
+                
+            });
     }
 
     assignData(data) 
@@ -115,6 +158,10 @@ export class BasicGraph
         // cria as escalas
         this.createScales();
 
+        // porem antes
+
+        this.nameAxis();
+
         // cria ou atualiza os eixos novos (toda vez que um dado novo é jogado no sistema)
         
         if(updateFlag)
@@ -123,6 +170,7 @@ export class BasicGraph
         }
         else
         {
+            this.nameAxis();
             this.createAxis();
         }
         

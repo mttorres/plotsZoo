@@ -22,7 +22,11 @@ export class ScatterGraph extends BasicGraph
       }
       else{
         this.circleParams = {cx: cx, cy: cy, r:r};
-      }     
+      }  
+      
+      this.labelX = cx;
+      this.labelY = cy;
+      
     }
     /* 
         transforma os dados após o assign data
@@ -97,10 +101,10 @@ export class ScatterGraph extends BasicGraph
         circlesCanv.exit().call(ex => ex.transition(t).attr("opacity", 0).remove())
            
         circlesCanv.attr('r' , d => d.r)  
-                   .style('fill', d=> this.colScale(d.col))
                    .call(up => up.transition(t)
                                  .attr('cx', d => this.xScale(d.cx))
-                                 .attr('cy', d => this.yScale(d.cy)));
+                                 .attr('cy', d => this.yScale(d.cy)))
+                                 .style('fill', d=> this.colScale(d.col));
 
       
     }
