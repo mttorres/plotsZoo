@@ -18,6 +18,22 @@
         <h2>Graph Config</h2>
         <p>Here you can change the Dataset and parameters os the Graph. <br> 
           (On this current version the dataset has to be in the <strong>/data</strong> folder)</p>
+          <form name="myForm" action="/action_page.php" onsubmit="return validateForm()" method="post">
+            <p id="path"><label for="path"></label>File:</label> <input type="text" name="path"> </p>
+            <p id="fx"><label for="fx"></label>(X):</label> <input type="text" name="fx"> </p>
+            <p id="fy"><label for="fy"></label>(Y):</label> <input type="text" name="fy"></p>
+            <p id="col"><label for="col"></label>(Color):</label> <input type="text" name="col"></p>
+            <p id="colScheme"><label for="colScheme"></label>Color Scheme: <select name="colScheme" id="colScheme">
+              <option value="CAT">By category</option>
+              <option value="INTER">By Interpolation</option>
+            </select></p> 
+            <p id="catScheme"><label for="catScheme"></label>Bar Scheme:</label>   <select name="cars" id="cars">
+              <option value="NUM">Histogram</option>
+              <option value="CAT">By category</option>
+            </select> </p>
+            <p id="sub"><input type="submit" value="Submit"></p>
+          </form>
+  
       </div>
     </div>
   </body>
