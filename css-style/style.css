@@ -1,0 +1,75 @@
+/*Página principal*/
+
+header {
+  text-align: center;
+}
+
+
+.menu-divide {
+  display: flex;
+  width:600px;
+  text-align:left;
+  margin:auto;
+}
+
+.plot-head:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+
+.plotDetails:hover {
+  box-shadow: 0 12px 24px 0 rgba(0,0,0,0.4);
+}
+
+.plotDetails {
+  padding: 0 0.75rem 0;
+  margin-left: 2rem;
+  border-radius: 4px;
+  background-color: rgba(255,255,255,0.25);
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.4);
+  transition: 0.2s;
+}
+
+.plot {
+  margin-right: 4.5rem;
+}
+
+h3 {
+  margin-left: 1rem;
+}
+
+
+/* Páginas filhas */
+
+.split {
+    height: 100%;
+    width: 40%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+  
+  /* Control the left side */
+  .left {
+    left: 0;
+    /*background-color: #111;*/
+  }
+  
+  /* Control the right side */
+  .right {
+    right: 0;
+    /*background-color: red;*/
+  }
+  
+  
+  .centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+

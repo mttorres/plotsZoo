@@ -2,15 +2,104 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Z O O</title>
-    <!-- css nao usado... (seta com o d3/js) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css-style/style.css" />
 
-    <!-- Inclusão da biblioteca d3js -->
     <script src="https://d3js.org/d3.v6.min.js"></script>
+    <title> Z O O </title>
   </head>
+  <!-- For more info, visit https://www.d3-graph-gallery.com/graph/scatter_animation_start.html -->
   <body>
-    <div id="main"></div>
+    <header>
+      <hr />
+      <h1>Plot Zoo </h1>
+      <p>
+        "Plot Zoo" is a simple chart libary  made on JavaScript, using 
+        <strong>D3.js</strong>. 
+      </p>
+      <p>
+        The application supports input from <strong>CSV</strong> 
+        and <strong>JSON</strong> datasets for <strong>bar</strong>,<strong> line</strong>
+        and <strong>scatterplot</strong> charts.
+      </p>
+      <p>For mor details, you can select a graph of the <strong>libary</strong> bellow. Also check the <strong>main.js</strong> file! </p>  
+    </header>
+    <hr />
+    <span class="divider"></span>  
+    <section>
+    <div class ="menu-divide block center">
+        <div class="plotDetails"> 
+          <a href="pages/graphinter.html?plot=scatter"> 
+            <h3 class="plot-head">Scatterplots</h3>
+            <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+              <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	            width="130px" height="130px" viewBox="0 0 130 130" enable-background="new 0 0 130 130" xml:space="preserve">
+              <g>
+	                <circle fill="#2980DE" cx="65" cy="64.999" r="64"/>
+	              <g>
+		              <circle fill="#FFFFFF" cx="44.001" cy="84.212" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="48.119" cy="74.604" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="58.931" cy="85.229" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="61.219" cy="68.604" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="69.151" cy="76.077" r="2.033"/>
+		              <path fill="#FFFFFF" d="M91.775,82.634c0,1.124-0.912,2.036-2.034,2.036c-1.124,0-2.033-0.912-2.033-2.036
+			          c0-1.121,0.909-2.032,2.033-2.032C90.863,80.602,91.775,81.513,91.775,82.634z"/>
+		              <circle fill="#FFFFFF" cx="69.456" cy="56.401" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="55.575" cy="51.979" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="77.388" cy="63.875" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="70.371" cy="63.57" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="54.508" cy="63.875" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="60.303" cy="76.229" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="82.724" cy="42.98" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="89.131" cy="54.418" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="79.064" cy="52.131" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="94.47" cy="44.047" r="2.034"/>
+		              <circle fill="#FFFFFF" cx="89.888" cy="35.965" r="2.034"/>
+		              <polyline fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" points="31.477,32.607 31.477,96.059 
+			            99.808,96.059"/>
+	            </g>
+            </g>
+          </svg>
+        </a>   
+      </div>
+      <div class="plotDetails"> 
+        <a href="pages/graphinter.html?plot=bar"> 
+        <h3 class="plot-head">Bar Charts</h3>
+        <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+          width="130px" height="130px" viewBox="0 0 130 130" enable-background="new 0 0 130 130" xml:space="preserve">
+            <circle fill="#2980DE" cx="65.084" cy="64.917" r="64"/>
+              <g>
+                <rect x="28.741" y="60.375" fill="#FFFFFF" width="14.708" height="32.949"/>
+                <rect x="86.721" y="67.037" fill="#FFFFFF" width="14.706" height="26.287"/>
+                <rect x="67.394" y="49.194" fill="#FFFFFF" width="14.707" height="44.13"/>
+                <rect x="48.066" y="29.777" fill="#FFFFFF" width="14.708" height="63.547"/>
+              </g>
+        </svg>
+      </a>  
+      </div>
+      <div class="plotDetails" >
+      <a href="pages/graphinter.html?plot=line">
+        <h3 class="plot-head">Line Charts</h3>
+        <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        width="130px" height="130px" viewBox="0 0 130 130" enable-background="new 0 0 130 130" xml:space="preserve">
+          <g>
+              <circle fill="#2980DE" cx="65" cy="65" r="64"/>
+              <polyline fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" points="24.893,92.4 
+              38.868,64.604 51.895,87.238 64.921,63.972 74.529,76.517 91.527,37.6 105.108,63.015 	"/>
+          </g>
+        </svg>
+      </a>   
+    </div> 
+    </div>
+  </section>
+  <hr />
+  <hr />
   </body>
-
   <script type="module" src="main.js"></script>
 </html>
