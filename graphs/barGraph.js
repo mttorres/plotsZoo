@@ -1,52 +1,101 @@
-const d3 = window.d3;
+import {BasicGraph} from './basicGraph.js';
 
-export class Bar {
+export class Bar extends BasicGraph {
   constructor(config) {
 
-    this.config = config;
-    this.rawData = [];
+    super(config);
+    this.dataTransf = [];
     this.bins = [];
+    this.chooseFields(config.fx,config.catScheme, config.numCat);
+
     // intervalo de valores no eixo x e y
-    this.x = [Infinity, -Infinity];
-    this.y = [Infinity, -Infinity];
-
-    // informações de escala (marcadores)
-
-    this.xScale = null;
-    this.yScale = null;
-
-    this.colScale = null;
-    this.catScale = null;    
+    this.ticks = config.numCat;
     
-    
-    this.w = this.config.width;
-    this.h = this.config.height;
-
-    this.createSvg();
   }
 
-  createSvg() {
-    this.svg = d3
-      .select("#main")
-      .append("svg")
-      .attr("x", this.config.posX)
-      .attr("y", this.config.posY)
-      .attr("width", this.w)
-      .attr("height", this.h);
+  chooseFields(x,catScheme,numCat)
+  {
+     this.binsParams = {x: x, catScheme: catScheme, n: numCat};
   }
 
-  // compute bins (vamos transformar os mil dados!)
+
+    /* 
+        transforma os dados após o assign data
+    */
+   transformData(data)
+   {
+       const dataTransf = data.map((d) => {
+          if(this.binsParams.catScheme == "NUM")
+          {
+            return {x:  +d[this.binsParams.x]};
+          }
+          else
+          {
+            return {x:  d[this.binsParams.x]}; 
+          }
+        }); 
+       this.dataTransf = dataTransf;
+   }
+
+   /**
+    * criar baseado nos dados que temos as escalas e os bins
+    */
+   createScales()
+   {
+
+      //nesse caso : eixo X (não numérico, conjunto de categorias por exemplo) e Y (e soma de tudo)
+
+      let xExtent;
+      let yExtent;
+
+      if(this.binsParams.catScheme == "NUM")
+      {
+
+        this.bins = [];
+
+        this.computeBins(this.binsParams.n);
+        xExtent = d3.extent(this.dataTransf, d => {
+          return d.x;
+        });
+
+        yExtent = d3.extent(this.bins, d => {
+          return d;
+        });
+
+        this.xScale = d3.scaleLinear().domain(xExtent).nice().range([0, this.config.width]); 
+      
+      }
+      else
+      {
+        // estamos lidando com dados categoricos não ordinais
+        this.bins = new Map();
+        this.dataTransf.forEach((d) => {
+          let prevVal = this.bins.get(d.x) ? this.bins.get(d.x) : 0;   
+          this.bins.set(d.x, prevVal + 1);
+        });
+
+        let catExtent = [];
+        for (let [key,value] of this.bins) {
+          catExtent.push(key);
+        }
+        
+        this.xScale = d3.scaleBand().domain(catExtent).range([0, this.config.width]).padding(0.2);
+
+        yExtent = d3.extent(this.bins, d => {
+          return d[1];
+        });
+
+      }
+
+      this.yScale = d3.scaleLinear().domain([0,yExtent[1]]).nice().range([this.config.height,0]);  
+
+   }
+
+  // compute bins (vamos transformar os dados!)
   computeBins(numCategorias) {
-    //console.log("[computeBins] data:  " + this.data);
-    //console.log("[computeBins] length:  " + this.data.length);
-    let x = d3.extent(this.data, d => {
-      return d.val;
+    let x = d3.extent(this.dataTransf, d => {
+      return d.x;
     });
-
-    // retorna os vetores [min,max] do eixo X
-
-    // criando o número máximo de colunas (categorias) !
-    // e largura de cada barra (bin)
 
     let catego = numCategorias;
     let larg = (x[1] - x[0]) / (numCategorias - 1); // tamanho de cada bin do eixo x (max - min )/ (categorias -1)
@@ -57,66 +106,37 @@ export class Bar {
     }
 
     // já que a largura de cada barra é um intervalo , vamos jogar valores nesse intervalo !
-    this.data.forEach((d) => {
-      let posPlace = Math.floor((d.val - x[0]) / larg); // (ex:  74 - 0 / (100 - 0 / 9)  = 6,6600...) (floor vai jogar para 6)
+    this.dataTransf.forEach((d) => {
+      let posPlace = Math.floor((d.x - x[0]) / larg); // (ex:  74 - 0 / (100 - 0 / 9)  = 6,6600...) (floor vai jogar para 6)
       this.bins[posPlace] += 1;
     });
+
+    this.bandBins = (this.config.width/ this.bins.length); // evita que os bins fiquem muito colados
   }
 
-
-  // nosso setter!
-  setData(data) {
-    this.data = data;
-    this.computeBins(10); // por enquanto hard coded 
-    this.y = d3.extent(this.bins); // sabemos o maior e menor y para criar o eixo
-  }
-
-  // vai ditar as posições dos objetos dentro da ESCALA DO GRUPO G 
-  createScales()
+  // função matematica de desenhar!
+  renderMath() 
   {
-
-        let xExtent = d3.extent(this.circles, d => {
-            return d.cx;
-          });
-          let yExtent = d3.extent(this.circles, d => {
-            return d.cy;
-          });
-          let colExtent = d3.extent(this.circles, d => {
-            return d.col;
-          });
-      
-
-        const cats = this.circles.map(d=> {d.cat}); // obtem todos as categorias
-        let catExtent = d3.union(cats); // remove duplicatas (trata a lista como um conjunto, itens únicos)
-
-
-                                                                    // não deveria ser left aqui? (apesar que já estamos transladados para a left (o G esta))
-        this.xScale = d3.scaleLinear().domain(xExtent).nice().range([0, this.config.width]); // poderia escalar - rigth e no de baixo,  - bottom!
-        this.yScale = d3.scaleLinear().domain(yExtent).nice().range([this.config.height, 0]); // "invertido"        
-        
-        this.colScale = d3.scaleSequential(d3.interpolateOrRd).domain(colExtent); // interpola um "esquema de cores do valor" (não precisa do range do canal visual laranja par vermelho nesse caso)
-        // só usa range se quiser fazer um interpolador personalizado!
-        
-        this.catScale = d3.scaleOrdinal().domain(catExtent).range(d3.schemeTableau10); // usa  escala ordinal: categoria "segue ordens", não é um intervalo por não ser quantitativo nem sequencial poque não usamos interpolação
-        // mas tem uma lista qualquer como domínio que representa uma possiblidade de valores (que enquadram) para os seus dados 
-        // e no caso a gente para cada elemento do domínio a gente associa um scheme de cores (só para diferenciar as categorias)
-        // a única restrição é que o número de cores deve bater com todas as categorias! 
-
-        // nice serve para arredondamento!
-  }   
-
-
-
-  // função principal de desenhar!
-  render() 
-  {
-    this.svg.selectAll('rect')
+    this.margins.selectAll('rect')
     .data(this.bins)
-    .join('rect')   // para cada bin, fazer mapeamento em pixels  
-    .attr('x', (d, i) => i * this.w / this.bins.length + 10) // para cada indice (cada bin), teremos: indice X largura / total de barras (+10 para não ficar colado) 
-    .attr('y', d => this.h * ( 1 - (d - this.y[0]) / (this.y[1] - this.y[0]) )) // mapeando valores de 1 para pixels... para proporção
-    .attr('width' , () => this.w / 10 - 20) // o grafico não precisa ocupar tudo não... fica bem grudado
-    .attr('height' , d => this.h - this.h * ( 1 - (d - this.y[0]) / (this.y[1] - this.y[0]) )) // mesma coisa de antes para y
-    .style('fill', 'RoyalBlue')
+    .join('rect')  
+    .attr('x', (d,i) => (i* this.bandBins)) 
+    .attr('y', (d) => this.yScale(d))
+    .attr('width' , this.bandBins) 
+    .attr('height' , (d) => this.config.height - this.yScale(d))
+    .style('fill', 'Green')
+  }
+
+  // função categorica de desenhar!
+  renderOrd() 
+  {
+    this.margins.selectAll('rect')
+    .data(this.bins)
+    .join('rect')  
+    .attr('x', (d) => this.xScale(d[0])) 
+    .attr('y', (d) => this.yScale(d[1]))
+    .attr('width' , this.xScale.bandwidth()) 
+    .attr('height' , (d) => this.config.height - this.yScale(d[1]))
+    .style('fill', 'Green')
   }
 }
