@@ -1,7 +1,10 @@
 import { Dados } from './data/dados.js'
 import { Bar   } from './graphs/barGraph.js'
+import { BasicGraph } from './graphs/basicGraph.js';
 import { LineGraph } from './graphs/lineGraph.js';
 import {ScatterGraph} from './graphs/ScatterGraph.js'
+
+
 
 /*
 
@@ -19,15 +22,28 @@ import {ScatterGraph} from './graphs/ScatterGraph.js'
   parâmetros de entrada: (a) largura e altura do gráfico, (b) dimensões da margem, (c)
   escolha dos textos do label dos eixos x e y.
 
-*/
 
-function dataLinear2xProGeneretor()
+
+
+/*
+  todo:  
+  
+  criar 3 paginas
+    para cada uma dessas:
+      criar grafico (padrão)
+      criar botão de update -> update random ? ou pelas ações da configuração?
+      extra: criar botão que troca as dimensões (escrever? escolher?)
+
+
+*/ 
+
+function dataLinear2xProGeneretor(min,max,f)
 {
     let data = [];
-    for(let i = 1; i < 100; i++)
+    for(let i = min; i < max; i++)
     {
       //data[i] = {x: i , y: 2*i };
-      data.push({x: i , y: 2*i });
+      data.push({x: i , y: (2*i)**f });
     }
     return data;
 }
@@ -44,13 +60,14 @@ async function main() {
   let fx = 'Sales';
   let fy = 'Profit';
 
+/*  
   // vai ser um input
   let c = {div: "#main", width: 500, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
             fx: 'x', fy: 'y', col: "Category" , colScheme: 'CAT', r: 'r'};
 
   // vai ter um input para escolher o grafico da vez
   
-  //let bar = new Bar(c);
+  
 
   //let sp = new ScatterGraph(c); 
 
@@ -59,9 +76,8 @@ async function main() {
 
 
   // sempre teremos isso
-  //bar.setData(dados.getData());
   //sp.assignData(dados.getData());
-  lp.assignData(dataLinear2xProGeneretor());
+  lp.assignData(dataLinear2xProGeneretor(1,100,1));
 
   // e isso
   //bar.render();
@@ -71,14 +87,172 @@ async function main() {
   console.log("esperando...");
   setTimeout(() => {
     {
-      c['fx'] = fx;
-      c['fy'] = fy;
-      lp.config = c;
-      lp.chooseLine(c.fx,c.fy);
-      lp.assignData(dados.getData());
+
+      lp.assignData(dataLinear2xProGeneretor(20,70,2));
+      //c['fx'] = fx;
+      //c['fy'] = fy;
+      //lp.config = c;
+      //lp.chooseLine(c.fx,c.fy);
+      //lp.assignData(dados.getData());
       lp.render();
+    }
+  }, 10000);
+
+  let c2 = {div: "#main", width: 500, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+            fx: fx, fy: fy, col: "Discount" , colScheme: 'INTER', r: 'r'};
+
+            // interpola numeros ou categorias com cores diferentes
+
+
+  let sp = new ScatterGraph(c2);    
+  sp.assignData(dados.getData());       
+  sp.render();
+
+  */
+
+  let c3 = {div: "#main", width: 800, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+  fx: "Profit", catScheme: 'NUM', numCat: 15};
+        // categorias 
+        // ou bins de numeros (arredonda e joga ele em intervalos arredondados tmb)
+
+  let c4 = {div: "#main", width: 800, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+  fx: "Category", catScheme: 'CAT'};
+
+  
+
+  //let bar = new Bar(c4);
+  //bar.assignData(dados.getData());
+  bar.renderOrd();
+
+  
+  //let barM = new Bar(c3);
+  //barM.assignData(dados.getData());
+  //barM.renderMath();
+
+}
+
+//main();
+
+async function initScatter()
+{
+  // default (primeira vez)
+  let dados = new Dados();
+  await dados.loadCSV('../../../datasets/superstore.csv');
+  // vai receber os campos para serem passados:
+  let fx = 'Sales';
+  let fy = 'Profit';
+
+  // vai ser um input na proxima vez
+  let c = {div: "#main", width: 750, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+    fx: fx, fy: fy, col: "Category" , colScheme: 'CAT', r: 'r', ticks: 15};
+
+    
+
+  let sp = new ScatterGraph(c); 
+
+  sp.assignData(dados.getData());       
+  sp.render();
+
+  console.log("esperando...");
+  setTimeout(() => {
+    {
+
+
+      c.colScheme = "INTER";      
+      c.col = "Discount"
+      sp.chooseCircle(c.fx, c.fy, c.col, c.c, c.r);
+      sp.assignData(dados.getData());
+      sp.render();
+    }
+  }, 10000);
+
+
+}
+
+
+async function initLine()
+{
+
+  let dados = new Dados();
+  //await dados.loadCSV('../../../datasets/superstore.csv');
+
+  let fx = 'x';
+  let fy = 'y';
+
+  // vai ser um input na proxima vez
+  let c = {div: "#main", width: 750, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+    fx: fx, fy: fy, ticks: 15 };
+
+  let lp = new LineGraph(c); 
+
+  lp.assignData(dataLinear2xProGeneretor(1,100,1));       
+  lp.render();
+
+  console.log("esperando...");
+  setTimeout(() => {
+    {
+
+      lp.assignData(dataLinear2xProGeneretor(20,70,2));
+      //c['fx'] = fx;
+      //c['fy'] = fy;
+      //lp.config = c;
+      //lp.chooseLine(c.fx,c.fy);
+      //lp.assignData(dados.getData());
+      lp.render();
+    }
+  }, 10000);
+
+
+}
+
+async function initBar()
+{
+  let dados = new Dados();
+  await dados.loadCSV('../../../datasets/superstore.csv');
+
+  let fx = 'Profit';
+
+  // vai ser um input na proxima vez
+  let c = {div: "#main", width: 800, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+  fx: fx, catScheme: 'NUM', numCat: 15};
+
+  let bp = new Bar(c); 
+
+  bp.assignData(dados.getData());       
+  bp.renderMath();
+
+  console.log("esperando...");
+  setTimeout(() => {
+    {
+
+      c.fx = "Category";
+      c.catScheme = "CAT";
+      
+      bp.chooseFields(c.fx, c.fy, c.col, c.colScheme, c.r);
+      bp.assignData(dados.getData());
+      bp.renderOrd();
     }
   }, 10000);
 }
 
-main();
+
+async function testMainNew()
+{
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const plot_type = urlParams.get('plot')
+  console.log(plot_type);
+
+  if(plot_type === "scatter"){
+    initScatter();
+  }
+  if(plot_type === "bar"){
+    initBar();
+  }
+  if(plot_type === "line"){
+    initLine();
+  }
+
+}
+
+testMainNew();

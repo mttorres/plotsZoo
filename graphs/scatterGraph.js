@@ -6,8 +6,8 @@ export class ScatterGraph extends BasicGraph
     {
         super(config);
         this.circles = [];
-        this.circleParams = this.chooseCircle(config.fx, config.fy, config.col, config.colScheme, config.r);
-        this.ticks = 15;
+        this.chooseCircle(config.fx, config.fy, config.col, config.colScheme, config.r);
+        this.ticks = this.config.ticks;
         // parâmetros:  cx, cy, se deve ter cores mapeando algum atributo, como esse atributo de cor deve-ser feito (via gradiente de cores ou por cada cor um valor), raio
     }
 
@@ -18,11 +18,12 @@ export class ScatterGraph extends BasicGraph
     {
       if(col)
       {
-        return {cx: cx, cy: cy, col: col, colScheme, r:r};
+        this.circleParams =  {cx: cx, cy: cy, col: col, colScheme, r:r};
       }
-      return {cx: cx, cy: cy, r:r};
+      else{
+        this.circleParams = {cx: cx, cy: cy, r:r};
+      }     
     }
-
     /* 
         transforma os dados após o assign data
     */
@@ -55,9 +56,9 @@ export class ScatterGraph extends BasicGraph
         {
             if(this.circleParams.colScheme === "CAT")
             {
-                const cats = this.circles.map(d=> {d.col}); // obtem todos as categorias
+                const cats = this.circles.map(d=> {d.col}); // obtem todas as categorias
                 let catExtent = d3.union(cats); // remove duplicatas (trata a lista como um conjunto, itens únicos)
-                this.colScale = d3.scaleOrdinal().domain(catExtent).range(d3.schemeTableau10); 
+                this.colScale = d3.scaleOrdinal().domain(catExtent).range(d3.schemeTableau10); // arranja uma cor para cada uma delas
             }
             else
             {
@@ -74,40 +75,34 @@ export class ScatterGraph extends BasicGraph
 
     }
 
-
-    assignData(data) 
-    {
-        console.log(`[assignData - debug] data: ${data}`);
-        this.transformData(data);
-        console.log(`[assignData - debug] transform: ${this.circles}`);
-        // cria as escalas
-        this.createScales();
-        // cria os eixos novos (toda vez que um dado novo é jogado no sistema)
-        this.createAxis();
-    }
-
     /*
         Render original usado na aula...
     */
 
     render()
     {
-        this.margins.selectAll('circle')
-        .data(this.circles)
-        .join('circle')
-        .attr('cx', d => this.xScale(d.cx))
-        .attr('cy', d => this.yScale(d.cy))
-        .attr('r' , d => d.r)
-        .attr('fill', d=> this.colScale(d.col));
-    }
+        const t = d3.transition().ease(d3.easeLinear).duration(1000);
+        const circlesCanv = this.margins.selectAll('circle').data(this.circles);
 
+        circlesCanv.enter()
+                        .append('circle')
+                        .attr('r' , d => d.r)
+                        .attr("opacity", 0)
+                        .attr('cx', d => this.xScale(d.cx))
+                        .attr('cy', d => this.yScale(d.cy))
+                        .style('fill', d=> this.colScale(d.col))
+                        .call(en => en.transition(t).attr("opacity",1));
 
-    /*
-        Render usado para fazer as "transições" (enter,update,delete) (se livrar das cores das categorias se for o caso)
-    */ 
-    renderT()
-    {
+        
+        circlesCanv.exit().call(ex => ex.transition(t).attr("opacity", 0).remove())
+           
+        circlesCanv.attr('r' , d => d.r)  
+                   .style('fill', d=> this.colScale(d.col))
+                   .call(up => up.transition(t)
+                                 .attr('cx', d => this.xScale(d.cx))
+                                 .attr('cy', d => this.yScale(d.cy)));
 
+      
     }
 
 }

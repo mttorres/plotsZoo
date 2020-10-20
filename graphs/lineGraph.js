@@ -7,7 +7,7 @@ export class LineGraph extends BasicGraph
         super(config);
         this.lineSeg = [];
         this.chooseLine(config.fx, config.fy);
-        this.ticks = 15;
+        this.ticks = this.config.ticks;
         this.lineDefinitions = d3.line()
                                 .x(d => this.xScale(d.x))
                                 .y(d => this.yScale(d.y));
@@ -20,7 +20,6 @@ export class LineGraph extends BasicGraph
     */
     chooseLine(x,y)
     {
-        debugger;
         this.lineParams = {x: x, y: y};
     }
 
@@ -57,21 +56,19 @@ export class LineGraph extends BasicGraph
     render()
     {
 
-        const t = this.lineCanvas.transition().duration(1000);
+        const t = d3.transition().ease(d3.easeLinear).duration(1000);
         const line = this.margins.selectAll('.lineCanv').datum(this.lineSeg);
 
 ///*
         line.join(
-            en => en.call(en => en.attr("opacity", 0).transition(t).ease(d3.easeLinear).attr("opacity", 1))
-                    .attr("d", this.lineDefinitions)
+            en => en.call(en => en.attr("opacity", 0).transition(t).attr("d", this.lineDefinitions).attr("opacity", 1))
                     .style('stroke','RoyalBlue'),
         
-            up => up.call(up => up.attr("opacity", 0).transition(t).ease(d3.easeLinear).attr("opacity", 1))
-                    .attr("d", this.lineDefinitions)
+            up => up.call(up => up.attr("opacity", 0).transition(t).attr("d", this.lineDefinitions).attr("opacity", 1))
                     .style('stroke', 'RoyalBlue'),
                     
             ex => ex.style("stroke", "IndianRed")
-            .call(ex => ex.attr("opacity", 0).transition(t).remove())
+            .call(ex => ex.transition(t).attr("opacity", 0).remove())
         )
         .attr("fill", "none")
         .attr("stroke-width", 1.5)

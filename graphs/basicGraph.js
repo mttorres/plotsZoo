@@ -115,7 +115,7 @@ export class BasicGraph
         // cria as escalas
         this.createScales();
 
-        // cria os eixos novos (toda vez que um dado novo é jogado no sistema)
+        // cria ou atualiza os eixos novos (toda vez que um dado novo é jogado no sistema)
         
         if(updateFlag)
         {
