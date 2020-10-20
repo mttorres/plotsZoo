@@ -15,7 +15,7 @@ export class Bar extends BasicGraph {
 
   chooseFields(x,catScheme,numCat)
   {
-    this.labelX = catScheme === "NUM"?  'Intervals' : 'Category';
+    this.labelX = catScheme === "NUM"?  'Intervals' : x;
     this.labelY = catScheme === "NUM"?  x  : 'Total' ;
     this.binsParams = {x: x, catScheme: catScheme, n: numCat};
   }

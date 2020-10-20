@@ -133,6 +133,49 @@ async function main() {
 
 //main();
 
+
+function updateChart(dados,c,t)
+{
+  if(t instanceof ScatterGraph){
+    t.chooseCircle(c.fx, c.fy, c.col, c.colScheme, c.r);
+  }
+
+  if(t instanceof LineGraph){
+    t.chooseLine(c.fx,c.fy);
+  }
+
+  if(t instanceof Bar){
+    t.chooseFields(c.fx,c.catScheme,c.numCat);
+  }
+
+
+
+  if(dados.getData)
+  {
+    t.assignData(dados.getData());
+  }
+  else
+  {
+    t.assignData(dados);
+  }
+
+  if(t instanceof Bar){
+    if(c.catScheme === "NUM"){
+      t.renderMath();
+    }
+    else{
+      t.renderOrd();
+    }
+  }
+  else{
+    t.render();
+  }
+  
+
+}
+
+
+
 async function initScatter(c)
 {
   // default (primeira vez)
@@ -147,14 +190,11 @@ async function initScatter(c)
   console.log("esperando...");
   setTimeout(() => {
     {
-
       c.fx = "Shipping Cost";
       c.fy = "Sales";     
       c.col = "Discount"
       c.colScheme = "INTER"; 
-      sp.chooseCircle(c.fx, c.fy, c.col, c.colScheme, c.r);
-      sp.assignData(dados.getData());
-      sp.render();
+      updateChart(dados,c,sp);
     }
   }, 10000);
 
@@ -174,13 +214,12 @@ async function initLine(c)
   setTimeout(() => {
     {
 
-      lp.assignData(dataLinear2xProGeneretor(20,70,2));
+      updateChart(dataLinear2xProGeneretor(20,70,2),c,lp);
       //c['fx'] = fx;
       //c['fy'] = fy;
       //lp.config = c;
       //lp.chooseLine(c.fx,c.fy);
       //lp.assignData(dados.getData());
-      lp.render();
     }
   }, 10000);
 
@@ -203,9 +242,7 @@ async function initBar(c)
 
       c.fx = "Category";
       c.catScheme = "CAT";
-      bp.chooseFields(c.fx, c.catScheme, c.numCat);
-      bp.assignData(dados.getData());
-      bp.renderOrd();
+      updateChart(dados,c,bp);
     }
   }, 10000);
 }
