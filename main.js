@@ -227,8 +227,7 @@ async function initBar()
 
       c.fx = "Category";
       c.catScheme = "CAT";
-      
-      bp.chooseFields(c.fx, c.fy, c.col, c.colScheme, c.r);
+      bp.chooseFields(c.fx, c.catScheme, c.numCat);
       bp.assignData(dados.getData());
       bp.renderOrd();
     }

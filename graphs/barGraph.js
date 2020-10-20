@@ -117,26 +117,59 @@ export class Bar extends BasicGraph {
   // função matematica de desenhar!
   renderMath() 
   {
-    this.margins.selectAll('rect')
-    .data(this.bins)
-    .join('rect')  
-    .attr('x', (d,i) => (i* this.bandBins)) 
-    .attr('y', (d) => this.yScale(d))
-    .attr('width' , this.bandBins) 
-    .attr('height' , (d) => this.config.height - this.yScale(d))
-    .style('fill', 'Green')
+
+    const t = d3.transition().ease(d3.easeLinear).duration(1000);
+    const barCanv = this.margins.selectAll('rect').data(this.bins);
+
+
+    barCanv.enter()
+           .append('rect')
+           .attr("opacity", 0)
+           .attr('x', (d,i) => (i* this.bandBins))
+           .attr('y', (d) => this.yScale(d))
+           .attr('width' , this.bandBins)
+           .attr('height', (d) => this.config.height - this.yScale(d))
+           .style('fill', 'Green') 
+           .call(en => en.transition(t).attr("opacity",1));
+
+    
+    barCanv.exit().call(ex => ex.transition(t).attr("opacity", 0).remove())
+    
+    barCanv.call(up => up.transition(t)
+                         .attr('height' , (d) => this.config.height - this.yScale(d[1]))
+                         .attr('x', (d,i) => (i* this.bandBins))
+                         .attr('y', (d) => this.yScale(d))
+                         .attr('width' , this.bandBins) );
+       
   }
 
   // função categorica de desenhar!
   renderOrd() 
   {
-    this.margins.selectAll('rect')
-    .data(this.bins)
-    .join('rect')  
-    .attr('x', (d) => this.xScale(d[0])) 
-    .attr('y', (d) => this.yScale(d[1]))
-    .attr('width' , this.xScale.bandwidth()) 
-    .attr('height' , (d) => this.config.height - this.yScale(d[1]))
-    .style('fill', 'Green')
+
+    const t = d3.transition().ease(d3.easeLinear).duration(1000);
+    const barCanv = this.margins.selectAll('rect').data(this.bins);
+
+
+    barCanv.enter()
+           .append('rect')
+           .attr("opacity", 0)
+           .attr('x', (d) => this.xScale(d[0]))
+           .attr('y', (d) => this.yScale(d[1]))
+           .attr('width' , this.xScale.bandwidth()) 
+           .attr('height' , (d) => this.config.height - this.yScale(d[1]))
+           .style('fill', 'Green') 
+           .call(en => en.transition(t).attr("opacity",1));
+
+    
+    barCanv.exit().call(ex => ex.transition(t).attr("opacity", 0).remove())
+    
+    barCanv.call(up => up.transition(t)
+                        .attr('height' , (d) => this.config.height - this.yScale(d[1]))
+                        .attr('x', (d) => this.xScale(d[0]))
+                        .attr('y', (d) => this.yScale(d[1]))
+                        .attr('width' , this.xScale.bandwidth()) );
+
+
   }
 }
