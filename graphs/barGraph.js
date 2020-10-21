@@ -56,6 +56,7 @@ export class Bar extends BasicGraph {
         this.bins = [];
 
         this.computeBins(this.binsParams.n);
+
         xExtent = d3.extent(this.dataTransf, d => {
           return d.x;
         });
@@ -76,12 +77,13 @@ export class Bar extends BasicGraph {
           this.bins.set(d.x, prevVal + 1);
         });
 
+
         let catExtent = [];
         for (let [key,value] of this.bins) {
           catExtent.push(key);
         }
         
-        this.xScale = d3.scaleBand().domain(catExtent).range([0, this.config.width]).padding(0.2);
+        this.xScale = d3.scaleBand().domain(catExtent).range([0, this.config.width]).padding(0.5);
 
         yExtent = d3.extent(this.bins, d => {
           return d[1];
@@ -138,7 +140,7 @@ export class Bar extends BasicGraph {
     barCanv.exit().call(ex => ex.transition(t).attr("opacity", 0).remove())
     
     barCanv.call(up => up.transition(t)
-                         .attr('height' , (d) => this.config.height - this.yScale(d[1]))
+                         .attr('height' , (d) => this.config.height - this.yScale(d))
                          .attr('x', (d,i) => (i* this.bandBins))
                          .attr('y', (d) => this.yScale(d))
                          .attr('width' , this.bandBins) );
