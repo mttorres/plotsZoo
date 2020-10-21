@@ -25,15 +25,7 @@ import {ScatterGraph} from './graphs/ScatterGraph.js'
 
 
 /*
-  todo:  
-  
-  criar 3 paginas
-    para cada uma dessas:
-      criar grafico (padrão)
-      criar botão de update -> update random ? ou pelas ações da configuração?
-      extra: criar botão que troca as dimensões (escrever? escolher?)
-
-
+  cria a função 2x^n de 100 pontos.
 */ 
 
 function dataLinear2xProGeneretor(min,max,f)
@@ -46,6 +38,17 @@ function dataLinear2xProGeneretor(min,max,f)
     }
     return data;
 }
+
+
+/*
+  Atualiza qualquer gráfico(t) com novos dados(dados), novas configurações (c).
+
+  Efeitos colaterais: 
+      Seja dados === undefined ou null, um novo arquivo gerenciador de dados e o arquivo csv ou json é carregado
+      Muda os prametros de c e t;
+  
+*/ 
+
 
 async function updateChart(dados,c,t)
 {
@@ -78,12 +81,12 @@ async function updateChart(dados,c,t)
      if(c.path.slice(-3,-1) === "cs")
      {
        await dados.loadCSV(c.path);
-       window.myScopeOb.dados = dados;
      }
      else
      {
-        alert("DANGER");
+      await dados.loadJson(c.path);
      }
+     window.myScopeOb.dados = dados;
      t.assignData(dados.getData());
   }
 
@@ -186,6 +189,11 @@ async function initBar(c)
 
 }
 
+/**
+ *  Inicia os plots em "modo demonstração"
+ *  As funções desenham o gráfico pela primeira vez e 
+ *  10 segundos depois desenham uma variação do anterior
+ */
 
 async function plotini()
 {
@@ -244,10 +252,6 @@ async function plotini()
 }
 
 
-window.onload = () =>{
-  main();
-}
-
 async function sub(){ 
   
   debugger;
@@ -266,9 +270,11 @@ async function sub(){
     pathValidation = http.status !== 404;;
     
   }
+  let pathChange =  window.myScopeOb.c.path !== path;
 
   window.myScopeOb.c.path = pathValidation? path : window.myScopeOb.c.path;
-  window.myScopeOb.dados = pathValidation? null : window.myScopeOb.dados;
+  // usado para "cachear os" dados
+  window.myScopeOb.dados = pathValidation && pathChange? null : window.myScopeOb.dados;
 
   let fx = document.getElementById("fx").children[1].value;
   window.myScopeOb.c.fx = fx? fx : window.myScopeOb.c.fx;
@@ -330,4 +336,8 @@ async function main()
       console.log(window.myScopeOb);
     }
      , 3000);
+}
+
+window.onload = () =>{
+  main();
 }
