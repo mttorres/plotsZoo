@@ -24,12 +24,18 @@
             <p id="col"><label for="col"></label>(Color):</label> <input type="text" name="col"></p>
             <p id="colScheme"><label for="colScheme"></label>Color Scheme: <select name="colScheme">
               <option value="CAT">By category</option>
-              <option value="INTER">By Interpolation</option>
-            </select></p> 
+              <option value="INTER">By Interpolation</option>    
+            </select>
+            (<strong>Category</strong>: Sets a <strong>different</strong> color for each attribute) <br> 
+            (<strong>Interpolation</strong>: Sets a <strong>grid</strong> of colors for each attribute)
+          </p> 
             <p id="catScheme"><label for="catScheme"></label>Bar Scheme:</label>   <select name="catScheme">
               <option value="NUM">Histogram</option>
               <option value="CAT">By category</option>
-            </select> </p>
+            </select> <br>
+            (<strong>Histogram</strong>: Using only numbers attributes data creates a <strong>Histogram</strong> with a predefined bandwidth intervals) <br> 
+            (<strong>Category</strong>: Use only <strong>categorical</strong> attributes for the graph)
+          </p>
             <p ><button id="sub" value="Submit">Update</button></p>
       </div>
     </div>
