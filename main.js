@@ -94,7 +94,7 @@ async function updateChart(dados,c,t)
       t.renderMath();
     }
     else{
-      t.renderOrd();
+      t.renderCat();
     }
   }
   else{

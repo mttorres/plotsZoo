@@ -148,7 +148,7 @@ export class Bar extends BasicGraph {
   }
 
   // função categorica de desenhar!
-  renderOrd() 
+  renderCat() 
   {
 
     const t = d3.transition().ease(d3.easeLinear).duration(1000);
