@@ -35,10 +35,6 @@ export class Dados {
     this.data = await d3.json(file);
     // lembrando que a função json não usa arrow function
 
-    this.data = this.data.map((d) => {
-      return type === 0 ? this.chooseRect(d) : this.chooseCircle(d); // retorna uma lista de objetos com o profit ( o + converte de string para float)
-    });
-
     this.data = this.data.slice(0, 1000); // pega só os mil primeiros
   }
 
