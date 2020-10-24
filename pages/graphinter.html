@@ -17,7 +17,7 @@
       <div class="centered">
         <h2>Graph Config</h2>
         <p>Here you can change the Dataset and parameters os the Graph. <br> 
-          (On this current version the dataset has to be in the <strong>/data</strong> folder)</p>
+          (On this current version the datasets set on default are on the <strong>../data</strong> folder)</p>
             <p id="path"><label for="path"></label>File:</label> <input type="text" name="path"> </p>
             <p id="fx"><label for="fx"></label>(X):</label> <input id="fx" type="text" name="fx"> </p>
             <p id="fy"><label for="fy"></label>(Y):</label> <input type="text" name="fy"></p>
@@ -33,9 +33,17 @@
               <option value="NUM">Histogram</option>
               <option value="CAT">By category</option>
             </select> <br>
-            (<strong>Histogram</strong>: Using only numbers attributes data creates a <strong>Histogram</strong> with a predefined bandwidth intervals) <br> 
+            (<strong>Histogram</strong>: Using only numerical attributes data creates a <strong>Histogram</strong> with a predefined bandwidth intervals) <br> 
             (<strong>Category</strong>: Use only <strong>categorical</strong> attributes for the graph)
           </p>
+        </p> 
+        <p id="lineScheme"><label for="lineScheme"></label>Line Scheme:</label>   <select name="lineScheme">
+          <option value="NUM">Only Numbers</option>
+          <option value="DATE">Convert Dates</option>
+        </select> <br>
+        (<strong>Only Numbers</strong>: Considers only numerical attributes of data)<br> 
+        (<strong>Convert Dates</strong>: Since <strong>timeXvalues</strong> graphs are far common, this option tries to create the graph using date atributes on <strong>X axis</strong>)
+        </p>
             <p ><button id="sub" value="Submit">Update</button></p>
       </div>
     </div>

@@ -25,22 +25,6 @@ import {ScatterGraph} from './graphs/ScatterGraph.js'
 
 
 /*
-  cria a função 2x^n de 100 pontos.
-*/ 
-
-function dataLinear2xProGeneretor(min,max,f)
-{
-    let data = [];
-    for(let i = min; i < max; i++)
-    {
-      //data[i] = {x: i , y: 2*i };
-      data.push({x: i , y: (2*i)**f });
-    }
-    return data;
-}
-
-
-/*
   Atualiza qualquer gráfico(t) com novos dados(dados), novas configurações (c).
 
   Efeitos colaterais: 
@@ -48,8 +32,6 @@ function dataLinear2xProGeneretor(min,max,f)
       Muda os prametros de c e t;
   
 */ 
-
-
 async function updateChart(dados,c,t)
 {
   if(t instanceof ScatterGraph){
@@ -57,7 +39,7 @@ async function updateChart(dados,c,t)
   }
 
   if(t instanceof LineGraph){
-    t.chooseLine(c.fx,c.fy);
+    t.chooseLine(c.fx,c.fy,c.lineScheme);
   }
 
   if(t instanceof Bar){
@@ -89,8 +71,6 @@ async function updateChart(dados,c,t)
      window.myScopeOb.dados = dados;
      t.assignData(dados.getData());
   }
-
-
 
   if(t instanceof Bar){
     if(c.catScheme === "NUM"){
@@ -136,17 +116,42 @@ async function initScatter(c)
 
 }
 
+/*
+  cria a função 2x^n de max pontos.
+*/ 
+
+function dataLinear2xProGeneretor(min,max,f)
+{
+    let data = [];
+    for(let i = min; i < max; i++)
+    {
+      //data[i] = {x: i , y: 2*i };
+      data.push({x: i , y: (2*i)**f });
+    }
+    return data;
+}
+
+/**
+ * 
+ * Inicia o LineChart no modo demosntração,
+ * NOTA: O primeiro gráfico é criado com base em uma função de dados: 2x^n
+ */
 
 async function initLine(c)
 {
 
   let lp = new LineGraph(c); 
+  
+  let dadosBusca = new Dados();
+  await dadosBusca.loadCSV(c.path);
 
-  let dados = dataLinear2xProGeneretor(1,100,1);
+  let dados = dataLinear2xProGeneretor(20,70,2);
   lp.assignData(dados);       
   lp.render();
 
   console.log("esperando...");
+
+  /*
   setTimeout(() => {
     {
       dados = dataLinear2xProGeneretor(20,70,2)
@@ -160,8 +165,19 @@ async function initLine(c)
       
     }
   }, 10000);
+  */
 
-  return {graph: lp, dados: dados};
+  setTimeout(() => {
+    {
+      dadosBusca.data  = dadosBusca.data.slice(0, 200);
+      c['fy'] = "Profit";
+      c['fx'] = "Order Date";
+      c.lineScheme = "DATE";
+      updateChart(dadosBusca,c,lp);
+    }
+  }, 10000);
+
+  return {graph: lp, dados: dadosBusca};
 
 }
 
@@ -210,8 +226,9 @@ async function plotini()
     // vai ser um input na proxima vez
     
     document.getElementById("catScheme").style.display  = "None"; 
+    document.getElementById("lineScheme").style.display  = "None"; 
     
-    var c = {path: '../../../datasets/superstore.csv', div: "#main", width: 750, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+    var c = {path: '../data/superstore.csv', div: "#main", width: 750, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
     fx: 'Sales', fy: 'Profit', col: "Category" , colScheme: 'CAT', r: 'r', ticks: 15};
     ob = await initScatter(c);
 
@@ -224,8 +241,9 @@ async function plotini()
     document.getElementById("col").style.display  = "None"; 
     document.getElementById("colScheme").style.display  = "None"; 
     document.getElementById("fy").style.display  = "None"; 
+    document.getElementById("lineScheme").style.display  = "None"; 
 
-    var c = {path: '../../../datasets/superstore.csv', div: "#main", width: 800, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+    var c = {path: '../data/superstore.csv', div: "#main", width: 800, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
     fx: "Profit", catScheme: 'NUM', numCat: 15};
     ob = await initBar(c);
 
@@ -238,8 +256,9 @@ async function plotini()
 
     document.getElementById("col").style.display  = "None"; 
     document.getElementById("colScheme").style.display  = "None"; 
+    
 
-    var c = {div: "#main", width: 750, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
+    var c = {path: '../data/superstore.csv', div: "#main", width: 750, height: 500, top: 40, left: 40, bottom: 40, right: 40 , posX: 10, posY: 10,
     fx: 'x', fy: 'y', ticks: 15 };
     ob = await initLine(c);
 
@@ -250,6 +269,10 @@ async function plotini()
 
 
 }
+
+/*
+* Função para submeter os dados do "form" básico da página.
+*/
 
 
 async function sub(){ 
@@ -291,7 +314,10 @@ async function sub(){
   {
     let fy = document.getElementById("fy").children[1].value;
 
+    let lineScheme = document.getElementById("lineScheme").children[1].value;
+
     window.myScopeOb.c.fy = fy? fy : window.myScopeOb.c.fy;
+    window.myScopeOb.c.lineScheme = lineScheme? lineScheme : window.myScopeOb.c.lineScheme;
     
   }
 
@@ -314,12 +340,19 @@ async function sub(){
 
 }
 
-
+/**
+ * 
+ * Seta as configurações iniciais de demonstração e prepara a página
+ * para cada tipo de gráfico e suas configurações.
+ * 
+ * */
 
 async function main()
 {
-
-  document.getElementById("sub").onclick = sub;  
+  var subBtt = document.getElementById("sub");
+  if(subBtt !== null){
+    subBtt.onclick = sub;  
+  }
 
   var graph; 
   var c;
@@ -331,12 +364,12 @@ async function main()
   graph = ob.graph;
   c = ob.c;
 
-  setInterval( () => 
-    {
-      console.log(window.myScopeOb);
-    }
-     , 3000);
 }
+
+/**
+ *  Carrega a main 
+ * 
+ * */
 
 window.onload = () =>{
   main();
