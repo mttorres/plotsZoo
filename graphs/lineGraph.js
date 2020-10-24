@@ -6,7 +6,7 @@ export class LineGraph extends BasicGraph
     {
         super(config);
         this.lineSeg = [];
-        this.chooseLine(config.fx, config.fy);
+        this.chooseLine(config.fx, config.fy,config.lineScheme);
         this.ticks = this.config.ticks;
         this.lineDefinitions = d3.line()
                                 .x(d => this.xScale(d.x))
@@ -18,11 +18,11 @@ export class LineGraph extends BasicGraph
 
     /* passa os nomes dos campos que devem ser extraídos de cada row
     */
-    chooseLine(x,y)
+    chooseLine(x,y,lineScheme)
     {
         this.labelX = x;
         this.labelY = y;
-        this.lineParams = {x: x, y: y};
+        this.lineParams = {x: x, y: y, lineScheme: lineScheme };
     }
 
     /* 
@@ -31,8 +31,9 @@ export class LineGraph extends BasicGraph
     transformData(data)
     {
         const lineSeg = data.map((d) => {
+            
             return {
-                x:  +d[this.lineParams.x], 
+                x:  this.lineParams.lineScheme === "DATE"? d3.timeParse('%d/%m/%Y')(d[this.lineParams.x]) : +d[this.lineParams.x], 
                 y:  +d[this.lineParams.y],
             
             }}); 
@@ -50,8 +51,11 @@ export class LineGraph extends BasicGraph
             return d.y;
           });
 
-        this.xScale = d3.scaleLinear().domain(xExtent).nice().range([0, this.config.width]); 
-        this.yScale = d3.scaleLinear().domain(yExtent).nice().range([this.config.height, 0]);  
+        this.xScale = this.lineParams.lineScheme === "DATE"? 
+            d3.scaleTime().domain(xExtent).range([0, this.config.width]) : 
+            d3.scaleLinear().domain(xExtent).nice().range([0, this.config.width]); 
+
+        this.yScale =  d3.scaleLinear().domain(yExtent).nice().range([this.config.height, 0]);  
 
     }
 
@@ -60,7 +64,7 @@ export class LineGraph extends BasicGraph
 
         const t = d3.transition().ease(d3.easeLinear).duration(1000);
         const line = this.margins.selectAll('.lineCanv').datum(this.lineSeg);
-
+        const stroke = this.lineParams.lineScheme === "DATE"? 0.5 : 1.5;
 ///*
         line.join(
             en => en.call(en => en.attr("opacity", 0).transition(t).attr("d", this.lineDefinitions).attr("opacity", 1))
@@ -73,7 +77,7 @@ export class LineGraph extends BasicGraph
             .call(ex => ex.transition(t).attr("opacity", 0).remove())
         )
         .attr("fill", "none")
-        .attr("stroke-width", 1.5)
+        .attr("stroke-width", stroke)
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round");
 
