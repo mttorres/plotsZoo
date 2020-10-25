@@ -6,7 +6,7 @@ A simple chart library made with *d3.js*.  The application supports input from <
         and <strong>JSON</strong> datasets for <strong>bar</strong>,<strong> line</strong>
         and <strong>scatterplot</strong> charts.
       </p>
-      <p>You can select a graph in the <strong>library</strong> below, each option contains 2 sample graphs that are updated automatically every 10 seconds. <br> 
+      <p>You can select a graph in the <strong>library</strong> below, each option contains 2 sample graphs that are updated automatically every 10 seconds. 
         Also it is possible to change the default dataset input and the configuration of each graph.</p> 
       <p>For more details, check the <strong>main.js</strong> file!</p>
 
